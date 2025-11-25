@@ -278,7 +278,7 @@ test('End to End flow', async ({ page }) => {
 })
 
 
-test.only('Dynamically find the products to buy from the list of products and navigate to add to cart', async ({ page }) => {
+test.only('Dynamically find the products to buy from the list of products and navigate to add to cart and submit order and catch the order id and search in orders', async ({ page }) => {
 
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
 
@@ -342,38 +342,54 @@ test.only('Dynamically find the products to buy from the list of products and na
 
   const dpcount = await dropdown.locator("button").count();
 
-  for(let i = 0; i < dpcount; i++) {
+  for (let i = 0; i < dpcount; i++) {
 
-    console.log(await dropdown.locator("span").nth(i).textContent() );
+    console.log(await dropdown.locator("span").nth(i).textContent());
 
     if (await dropdown.locator("span").nth(i).textContent() === " India") {
 
       await dropdown.locator("button").nth(i).click();
+
       break;
 
     }
   }
 
-  await page.pause();
+
+  const email = page.locator(".user__name [type='text']").first();
+  await page.locator(".action__submit").click();
+  await expect(page.locator(".hero-primary")).toHaveText(" Thankyou for the order. ");
+  const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+  console.log(orderId);
+
+  await page.locator('[routerlink*="order"]').first().click();
+
+  const row = await page.locator("table tr");
+
+  await page.locator("table").waitFor();
+
+  for (let i = 1; i < await row.count(); i++) {
+
+    const rowOrderId = await row.nth(i).locator('[scope="row"]').textContent();
+
+    console.log(rowOrderId);
+
+    if (await orderId.includes(rowOrderId)) {
+
+      console.log('found' + rowOrderId);
+      await row.nth(i).locator('button').first().click();
+
+      break;
+    }
+
+  }
+
+  await page.locator('text=Thank you for Shopping With Us').waitFor();
+
+   expect(await orderId.includes(page.locator('.col-text').first().textContent()));
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   console.log('test passed buddy')
 
 
 })
