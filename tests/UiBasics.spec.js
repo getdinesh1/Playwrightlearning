@@ -386,7 +386,18 @@ test.only('Dynamically find the products to buy from the list of products and na
 
   await page.locator('text=Thank you for Shopping With Us').waitFor();
 
-   expect(await orderId.includes(page.locator('.col-text').first().textContent()));
+  console.log(orderId);
+
+
+  console.log('the final'+await page.locator('.col-text').first().textContent());
+
+
+
+
+
+   expect(await orderId.includes(await page.locator('.col-text').first().textContent())).toBeTruthy();
+
+   
 
 
    console.log('test passed buddy')
