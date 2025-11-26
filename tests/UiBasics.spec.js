@@ -278,7 +278,7 @@ test('End to End flow', async ({ page }) => {
 })
 
 
-test.only('Dynamically find the products to buy from the list of products and navigate to add to cart and submit order and catch the order id and search in orders', async ({ page }) => {
+test('Dynamically find the products to buy from the list of products and navigate to add to cart and submit order and catch the order id and search in orders', async ({ page }) => {
 
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
 
@@ -389,19 +389,43 @@ test.only('Dynamically find the products to buy from the list of products and na
   console.log(orderId);
 
 
-  console.log('the final'+await page.locator('.col-text').first().textContent());
+  console.log('the final' + await page.locator('.col-text').first().textContent());
 
 
 
 
 
-   expect(await orderId.includes(await page.locator('.col-text').first().textContent())).toBeTruthy();
-
-   
+  expect(await orderId.includes(await page.locator('.col-text').first().textContent())).toBeTruthy();
 
 
-   console.log('test passed buddy')
+
+
+  console.log('test passed buddy')
 
 
 })
 
+
+test.only('smart locators by label, Placeholder, role and chaining and filter  and text', async ({ page }) => {
+
+  await page.goto("https://rahulshettyacademy.com/angularpractice/");
+
+  await page.getByLabel("Check me out if you Love IceCreams!").click();
+
+  await page.getByLabel("Employed").check();
+
+  await page.getByPlaceholder("Password").fill("Dinesh");
+
+  await page.getByRole("button", { name: 'Submit' }).click();
+
+  expect(await page.getByText("Success! The Form has been submitted successfully!.").isVisible()).toBeTruthy();
+
+  await page.getByRole("link", { name: 'Shop' }).click();
+
+  await page.locator("app-card").filter({hasText:'iphone X'}).getByRole("button").click();
+
+  await page.pause();
+
+
+
+})
