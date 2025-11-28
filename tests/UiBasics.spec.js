@@ -406,7 +406,7 @@ test('Dynamically find the products to buy from the list of products and navigat
 })
 
 
-test.only('smart locators by label, Placeholder, role and chaining and filter  and text', async ({ page }) => {
+test('smart locators by label, Placeholder, role and chaining and filter  and text', async ({ page }) => {
 
   await page.goto("https://rahulshettyacademy.com/angularpractice/");
 
@@ -426,6 +426,86 @@ test.only('smart locators by label, Placeholder, role and chaining and filter  a
 
   await page.pause();
 
+
+
+})
+
+
+test.only('Dynamically find the products to buy from the list of products and navigate to add to cart and submit order and catch the order id and search in orders. using smart locators', async ({ page }) => {
+
+  await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
+
+  await page.getByPlaceholder("email@example.com").fill("getdinesh6@gmail.com");
+
+  await page.getByPlaceholder("enter your passsword").fill("Dinesh123@");
+
+  await page.getByRole("button", {name:"Login"}).click();
+
+  await page.waitForLoadState("networkidle");
+
+  await page.locator(".card-body").first().waitFor();
+
+
+  await page.locator(".card-body").filter({hasText:'ZARA COAT 3'}).getByRole("button",{name : "Add To Cart"}).click();
+
+
+  await page.getByRole("listitem").getByRole("button",{name:"Cart"}).click();
+
+  await page.locator(".cartSection").getByText("ZARA COAT 3").waitFor();
+
+
+  await page.getByRole("button",{name:"Checkout"}).click();
+
+  await page.locator('.input').nth(3).click();
+
+  await page.locator('.input').nth(3).fill('123');
+
+
+  await page.locator('.input').nth(4).fill('Dinesh');
+
+
+  await page.locator('.input').nth(5).fill('rahulshettyacademy');
+
+
+  await page.getByRole("button",{name:"Apply Coupon"}).click();
+
+  await page.getByPlaceholder("Select Country").pressSequentially("indi");
+
+ await page.getByRole("button",{name:"India"}).nth(1).click();
+
+ 
+  const email = page.locator(".user__name [type='text']").first();
+
+  await page.getByText("Place Order ").click();
+ 
+  await expect(page.getByText(" Thankyou for the order. ")).toBeVisible();
+
+  
+  const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent();
+
+  console.log(orderId);
+
+  await page.locator('[routerlink*="order"]').first().click();
+
+  const row = await page.locator("table tr");
+
+  await page.getByRole("table").waitFor();
+
+  await page.locator("tr").filter({hasText:orderId.replace(/[|\s]/g, '')}).getByRole("button",{name:"View"}).click();
+
+
+  await page.getByText('Thank you for Shopping With Us').waitFor();
+
+  console.log(orderId);
+
+
+  console.log('the final' + await page.locator('.col-text').first().textContent());
+
+
+  expect(await orderId.includes(await page.locator('.col-text').first().textContent())).toBeTruthy();
+
+
+  console.log('test passed buddy')
 
 
 })
