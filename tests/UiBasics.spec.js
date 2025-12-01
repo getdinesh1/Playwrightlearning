@@ -431,7 +431,7 @@ test('smart locators by label, Placeholder, role and chaining and filter  and te
 })
 
 
-test.only('Dynamically find the products to buy from the list of products and navigate to add to cart and submit order and catch the order id and search in orders. using smart locators', async ({ page }) => {
+test('Dynamically find the products to buy from the list of products and navigate to add to cart and submit order and catch the order id and search in orders. using smart locators', async ({ page }) => {
 
   await page.goto("https://rahulshettyacademy.com/client/#/auth/login");
 

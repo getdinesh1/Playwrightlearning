@@ -5,7 +5,7 @@ import { chromium, defineConfig, devices } from '@playwright/test';
 // export default defineConfig({
 const Config= ({
   testDir: './tests',
-  timeout: 40*1000,
+  timeout: 10*1000,
   expect : {
   timeout: 5*1000,  
   },
