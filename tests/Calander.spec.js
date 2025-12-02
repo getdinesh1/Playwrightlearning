@@ -4,7 +4,7 @@ const {test,expect}= require("@playwright/test");
 
 
 
-test.only("Calander selection", async ({page}) =>
+test("Calander selection", async ({page}) =>
 {
 
     await page.goto("https://rahulshettyacademy.com/seleniumPractise/#/offers");
