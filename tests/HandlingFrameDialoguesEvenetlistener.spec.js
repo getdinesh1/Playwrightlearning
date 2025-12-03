@@ -41,7 +41,7 @@ await page.pause();
 
 
 
-test.only("handling frames ", async ({page}) =>
+test("handling frames ", async ({page}) =>
 {
 
     await page.goto("https://rahulshettyacademy.com/AutomationPractice/");
