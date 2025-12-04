@@ -4,28 +4,62 @@ const payload= {
     userEmail: "getdinesh6@gmail.com",
     userPassword: "Dinesh123@"
 };
+
+const orderPayload ={
+    orders: [
+        {
+            country: "India",
+            productOrderedId: "68a961459320a140fe1ca57a"
+        }
+    ]
+};
+
+let orderId;
 let token;
+
 test.beforeAll(async() =>
 {
 
     const ApiContext= await request.newContext();
 
-   const response=await ApiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
+    // Step 1: Login and get token
+    const response=await ApiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
         {
             data: payload
         });
 
-      expect(response.ok()).toBeTruthy();
+    expect(response.ok()).toBeTruthy();
 
-     const json= await response.json();
+    const json= await response.json();
+    token=json.token;
 
-      token=json.token;
+    // Step 2: Create order
+    const orderResponse = await ApiContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order",
+        {
+            data: orderPayload,
+            headers: {
+                "content-type": "application/json",
+                "authorization": token
+            }
+        }
+    )
 
+    expect(orderResponse.ok()).toBeTruthy();
+    
+    const orderJson = await orderResponse.json();
+    
+    // Validate response structure and extract order ID
+    if (!orderJson.orders || !Array.isArray(orderJson.orders) || orderJson.orders.length === 0) {
+        throw new Error(`Order creation failed. Response: ${JSON.stringify(orderJson)}`);
+    }
+
+    orderId = orderJson.orders[0];
+    console.log("Order ID extracted:", orderId);
 
 })
 
 
-test("client login via api req token",async ({page})=>
+test.only("client login via api req token",async ({page})=>
 {
 
     console.log(token);
@@ -38,5 +72,31 @@ test("client login via api req token",async ({page})=>
 
     await page.goto("https://rahulshettyacademy.com/client");
  await page.waitForTimeout(6000);
+
+
+  await page.locator('[routerlink*="order"]').first().click();
+
+  await page.pause();
+
+  const row = await page.locator("table tr");
+
+  await page.getByRole("table").waitFor();
+
+  await page.locator("tr").filter({hasText:orderId}).getByRole("button",{name:"View"}).click();
+
+
+  await page.getByText('Thank you for Shopping With Us').waitFor();
+
+  console.log(orderId);
+
+
+  console.log('the final' + await page.locator('.col-text').first().textContent());
+
+
+  expect(await orderId.includes(await page.locator('.col-text').first().textContent())).toBeTruthy();
+
+
+  console.log('test passed buddy')
+
 
 })
