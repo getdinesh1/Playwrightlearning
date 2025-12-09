@@ -1,4 +1,5 @@
 const {test,expect,request}= require('@playwright/test');
+const {ApiUtils}= require('./utils/ApiUtils');
 
 const payload= {
     userEmail: "getdinesh6@gmail.com",
@@ -22,38 +23,14 @@ test.beforeAll(async() =>
 
     const ApiContext= await request.newContext();
 
-    // Step 1: Login and get token
-    const response=await ApiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login",
-        {
-            data: payload
-        });
-
-    expect(response.ok()).toBeTruthy();
-
-    const json= await response.json();
-    token=json.token;
+    const apiUtils = new ApiUtils(ApiContext,payload);
+    
+    token= await apiUtils.getToken();
+    console.log('token extracted'+token);
 
     // Step 2: Create order
-    const orderResponse = await ApiContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order",
-        {
-            data: orderPayload,
-            headers: {
-                "content-type": "application/json",
-                "authorization": token
-            }
-        }
-    )
-
-    expect(orderResponse.ok()).toBeTruthy();
-    
-    const orderJson = await orderResponse.json();
-    
-    // Validate response structure and extract order ID
-    if (!orderJson.orders || !Array.isArray(orderJson.orders) || orderJson.orders.length === 0) {
-        throw new Error(`Order creation failed. Response: ${JSON.stringify(orderJson)}`);
-    }
-
-    orderId = orderJson.orders[0];
+ 
+    orderId = await apiUtils.getOrderId(orderPayload);
     console.log("Order ID extracted:", orderId);
 
 })
@@ -76,7 +53,7 @@ test.only("client login via api req token",async ({page})=>
 
   await page.locator('[routerlink*="order"]').first().click();
 
-  await page.pause();
+//   await page.pause();
 
   const row = await page.locator("table tr");
 
@@ -87,7 +64,7 @@ test.only("client login via api req token",async ({page})=>
 
   await page.getByText('Thank you for Shopping With Us').waitFor();
 
-  console.log(orderId);
+  console.log('order id is'+orderId);
 
 
   console.log('the final' + await page.locator('.col-text').first().textContent());
@@ -96,7 +73,7 @@ test.only("client login via api req token",async ({page})=>
   expect(await orderId.includes(await page.locator('.col-text').first().textContent())).toBeTruthy();
 
 
-  console.log('test passed buddy')
+  console.log('test passed buddy');
 
 
 })

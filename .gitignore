@@ -6,3 +6,12 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# AI/Agent tooling
+AGENTS.md
+agents.md
+crush.json
+.slingshot/
+.github/
+.vscode/
+.crush/
