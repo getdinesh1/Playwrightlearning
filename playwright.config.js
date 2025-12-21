@@ -15,6 +15,7 @@ const Config= ({
     headless : false ,
     browserName: 'chromium',
     trace : 'retain-on-failure',
+    //  trace : 'on',
    
     
   },

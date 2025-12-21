@@ -36,7 +36,7 @@ test.beforeAll(async() =>
 })
 
 
-test.only("client login via api req token",async ({page})=>
+test("client login via api req token",async ({page})=>
 {
 
     console.log(token);
