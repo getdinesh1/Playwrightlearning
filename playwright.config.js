@@ -23,6 +23,13 @@
  * - Show report: npx playwright show-report
  *
  * Documentation: https://playwright.dev/docs/intro
+ *
+ * Allure Reporting:
+ * - Install Allure CLI: npm install -g allure-commandline (or use npm scripts)
+ * - Generate report: npm run allure:generate
+ * - Serve report: npm run allure:serve
+ * - Allure results are stored in allure-results/ directory
+ * - For detailed Allure setup: https://docs.qameta.io/allure/
  */
 import { defineConfig, devices } from '@playwright/test';
 
@@ -46,7 +53,8 @@ const config = defineConfig({
   // When: Set to true, tests in the same project can run simultaneously.
   // Why: Further speeds up execution within projects.
   fullyParallel: true,
-  reporter: 'html',
+  // Reporters: HTML for local viewing, Allure for detailed reporting
+  reporter: [['html'], ['allure-playwright']],
   use: {
     headless: false,
     trace: 'on',
@@ -87,4 +95,3 @@ const config = defineConfig({
 });
 
 module.exports = config;
-
